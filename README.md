@@ -20,6 +20,8 @@ Copy `env.template` to `.env` in the project root and fill in your values:
 cp env.template .env
 ```
 
+`VITE_CTP_CLIENT_SECRET` is inlined into the browser bundle by Vite at build time, so it's extractable from any deployed build. Use a disposable/sandboxed commercetools project scoped to only the permissions this demo needs (see `VITE_CTP_SCOPE` in `env.template`) — never production credentials.
+
 ## Commands
 
 ```bash
