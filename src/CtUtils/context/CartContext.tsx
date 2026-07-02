@@ -37,7 +37,7 @@ export const CartProvider: FC<PropsWithChildren<{ mode: BraintreeCheckoutMode }>
     const draft =
       // mode === "pureVault"
       // ? { ...cartDraftFromLocal(), customerId: DEFAULT_CUSTOMER_ID } :
-      cartDraftFromLocal();
+      cartDraftFromLocal(undefined, mode);
     createCart(draft).then(({ body }) => {
       if (body) setCart(body);
     });
@@ -53,7 +53,7 @@ export const CartProvider: FC<PropsWithChildren<{ mode: BraintreeCheckoutMode }>
 
   const createCartFromDraft = async (data: CartStateData) => {
     try {
-      const { body } = await createCart(cartDraftFromLocal(data));
+      const { body } = await createCart(cartDraftFromLocal(data, mode));
       if (body) setCart(body);
     } catch (error) {
       setCartError((error as Error).message);
@@ -69,7 +69,7 @@ export const CartProvider: FC<PropsWithChildren<{ mode: BraintreeCheckoutMode }>
       localCartData.currency !== cart.totalPrice.currencyCode
     ) {
       try {
-        const { body } = await createCart(cartDraftFromLocal(localCartData));
+        const { body } = await createCart(cartDraftFromLocal(localCartData, mode));
         if (body) setCart(body);
       } catch (error) {
         setCartError((error as Error).message);

@@ -57,7 +57,7 @@ export const TriggerCheckoutButton = ({
     setLoading(true);
     try {
       const draft: CartDraft = {
-        ...cartDraftFromLocal(buildLocalDraft()),
+        ...cartDraftFromLocal(buildLocalDraft(), mode),
         ...(signedIn && { customerId: DEFAULT_CUSTOMER_ID }),
         ...(applyDiscount && {
           discountCodes: DISCOUNT_CODES.map((d) => d.code),
