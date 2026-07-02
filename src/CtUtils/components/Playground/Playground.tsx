@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { close } from "@commercetools/checkout-browser-sdk";
+import { Button } from "../Button.tsx";
 
 function isStandardMode(
   m: BraintreeCheckoutMode,
@@ -38,10 +40,16 @@ const PlaygroundContent = ({ mode, applicationKey }: CartWrapperProps) => {
   } = useCart();
   const [availableShippingMethods, setAvailableShippingMethods] =
     useState<ShippingMethod[]>();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const localStateChanged = useMemo(
     () => Object.keys(localCartData).length > 0,
     [localCartData],
   );
+
+  const handleCloseCheckout = () => {
+    close();
+    setCheckoutOpen(false);
+  };
 
   useEffect(() => {
     const country = serverCart?.billingAddress?.country;
@@ -56,6 +64,7 @@ const PlaygroundContent = ({ mode, applicationKey }: CartWrapperProps) => {
 
   useEffect(() => {
     setServerCart(undefined);
+    setCheckoutOpen(false);
   }, [mode]);
 
   return (
@@ -80,9 +89,15 @@ const PlaygroundContent = ({ mode, applicationKey }: CartWrapperProps) => {
                 ? () => loadStandardCheckout(serverCart.id, mode, applicationKey)
                 : undefined
             }
+            onCheckoutOpen={() => setCheckoutOpen(true)}
           />
         )}
       </div>
+      {checkoutOpen && mode === "paymentOnly" && (
+        <div className="fixed bottom-4 right-4 z-2147483647">
+          <Button action={handleCloseCheckout} title="Close checkout" />
+        </div>
+      )}
       {/* {mode === "pureVault" && serverCart && (
         <LoadVaultWithoutPurchase cartId={serverCart.id} cartDraft={cartDraftFromLocal(localCartData)} />
       )} */}
