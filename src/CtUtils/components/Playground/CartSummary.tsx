@@ -1,10 +1,9 @@
 import type { Cart } from "@commercetools/platform-sdk";
-import { close } from "@commercetools/checkout-browser-sdk";
 import { formatPrice } from "../../services/format";
-import { type FC, useMemo, useState } from "react";
-import { Button } from "../Button.tsx";
+import { type FC, useMemo } from "react";
 import { GroupWrapper } from "./CartSettings/GroupWrapper.tsx";
 import { DISCOUNT_CODES } from "../../../constants";
+import { Button } from "../Button.tsx";
 
 const getLocalizedString = (ls: Record<string, string>) =>
   ls["en"] ?? Object.values(ls)[0];
@@ -13,22 +12,21 @@ interface CartSummaryProps {
   cart: Cart;
   onLoadCheckout?: () => void;
   cartError?: string;
+  onCheckoutOpen?: () => void;
 }
 
 export const CartSummary: FC<CartSummaryProps> = ({
   cart,
   onLoadCheckout,
   cartError,
+  onCheckoutOpen,
 }) => {
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const { lineItems, shippingInfo, totalPrice, id } = cart;
   const hasAmount = (totalPrice?.centAmount ?? 0) > 0;
 
   const handleLoadCheckout = onLoadCheckout
-    ? () => { onLoadCheckout(); setCheckoutOpen(true); }
+    ? () => { onLoadCheckout(); onCheckoutOpen?.(); }
     : undefined;
-
-  const handleClose = () => { close(); setCheckoutOpen(false); };
 
   const discountIdToName = useMemo(
     () =>
@@ -135,11 +133,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
                 totalPrice.fractionDigits,
               )}`}
             />
-          )}
-          {checkoutOpen && (
-            <div className="fixed top-4 right-4 z-2147483647">
-              <Button action={handleClose} title="Close checkout" />
-            </div>
           )}
         </div>
       </div>
