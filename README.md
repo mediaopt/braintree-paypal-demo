@@ -20,6 +20,8 @@ Copy `env.template` to `.env` in the project root and fill in your values:
 cp env.template .env
 ```
 
+`VITE_CTP_CLIENT_SECRET` is inlined into the browser bundle by Vite at build time, so it's extractable from any deployed build. Use a disposable/sandboxed commercetools project scoped to only the permissions this demo needs (see `VITE_CTP_SCOPE` in `env.template`) — never production credentials.
+
 ## Commands
 
 ```bash
@@ -35,19 +37,16 @@ npx vitest               # run story-based tests (headless Chromium via Playwrig
 
 ## Architecture
 
-Cart configuration (product selection, shipping, discounts, customer) lives in React components under `src/components/`. These components communicate with commercetools via helpers in `src/helpers/`, split by entity:
+Cart configuration (product selection, shipping, discounts, cart-level settings) lives in React components under `src/CtUtils/components/Playground/`. These components read and write cart state through `CartContext` (`src/CtUtils/context/CartContext.tsx`), which talks to commercetools via services in `src/CtUtils/services/`, split by entity:
 
 | File | Responsibility |
 | --- | --- |
-| `helpers/auth.ts` | commercetools OAuth token |
-| `helpers/session.ts` | CT session creation, JWT and payment method fetching |
-| `helpers/cart.ts` | cart CRUD |
-| `helpers/shipping.ts` | shipping methods and shipping address |
-| `helpers/customer.ts` | customer assignment and billing address |
-| `helpers/products.ts` | product fetch, add/remove line items |
-| `helpers/discount.ts` | discount code add/remove |
-| `helpers/format.ts` | price formatting |
+| `services/auth.ts` | commercetools OAuth token |
+| `services/cart.ts` | cart CRUD |
+| `services/shipping.ts` | shipping methods |
+| `services/products.ts` | product fetch, add/remove line items |
+| `services/format.ts` | price formatting |
 
-The CT SDK client is set up in `src/clent/ctAPI.ts` and used by all helpers. Auth and session helpers use plain `fetch` since they talk to the CT sessions API and the Braintree processor directly.
+The CT SDK client is set up in `src/CtUtils/client/ctAPI.ts` and used by all services. `src/CheckoutLoader/session.ts` (OAuth token + CT session creation) uses plain `fetch` instead, since it talks to the CT Auth and Sessions APIs directly rather than the platform API.
 
-`CheckoutWrapper` orchestrates the full pre-payment flow and calls `onCheckoutReady` with everything needed to instantiate the Braintree `Enabler`.
+`src/CheckoutLoader/` is the bridge to the CT Checkout Browser SDK: `loadStandardCheckout.ts` fetches a session and calls the SDK's `paymentFlow()`/`checkoutFlow()`, `loadExpress.ts` + `mountExpressMethods.ts` handle express-pay button mounting. Checkout mode (`fullCheckout` / `paymentOnly` / `express`) is selected at runtime via the Storybook controls on the `Playground` and `TriggerCheckoutButton` stories.

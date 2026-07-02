@@ -20,9 +20,9 @@ This demo is intended to showcase the Braintree payment methods integration with
 
 Our own demo environment is already provided. To test it with your own commercetools project, you can clone the repository and set up your own environment variables, install the Braintree commercetools checkout connector for your project and create checkout application.
 
-We strongly recommend to use for this demo the API client with commercetools checkout permissions only, to avoid any unwanted side effects on your commercetools project.
-
 We use Vite for the development environment, so the environment variables should be prefixed with `VITE_` to be available in the code. If your shop is built with a different technology, you can adjust the environment variable names.
+
+**Important:** `VITE_CTP_CLIENT_SECRET` is compiled directly into the browser bundle — Vite inlines every `VITE_`-prefixed variable at build time, so anyone loading this app (including anyone visiting a deployed build) can extract it from view-source. **Never use production commercetools credentials here.** Create a disposable/sandboxed commercetools project for this demo, and scope its API client down to only the permissions this demo actually needs (see `VITE_CTP_SCOPE` in `env.template`) to limit what a leaked secret could do.
 
 **Required for checkout** — passed when initializing the commercetools checkout session:
 

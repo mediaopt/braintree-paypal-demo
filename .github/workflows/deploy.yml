@@ -28,6 +28,9 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Build Storybook
+        # VITE_CTP_CLIENT_SECRET is compiled into the published bundle (Vite inlines VITE_-prefixed
+        # vars at build time) and this build is deployed to a public GitHub Pages URL, so these
+        # secrets must belong to a disposable/sandboxed commercetools project, never production.
         run: npm run build-storybook
         env:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
