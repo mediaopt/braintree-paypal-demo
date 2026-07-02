@@ -1,12 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Return</title></head>
-<body>
-  <div>Payment processed. commercetools checkout redirected you to:</div>
-  <p id="url"></p>
-  <p><a href="../">← Back to Storybook</a></p>
-  <script>
-    document.getElementById('url').textContent = window.location.href;
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Return</title>
+    <script>
+      if (window.self !== window.top) {
+        window.top.location.href = window.self.location.href;
+      }
+    </script>
+  </head>
+  <body>
+    <div>Payment processed. Commercetools checkout redirected you to:</div>
+    <p id="url"></p>
+    <p>
+      It is your responsibility to build the actual result page for your shop.
+    </p>
+    <p><a href="../" target="_top">← Back to Storybook</a></p>
+    <script>
+      document.getElementById("url").textContent = window.location.href;
+    </script>
+  </body>
 </html>

@@ -2,12 +2,25 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { FC } from "react";
 import { TriggerCheckoutButton } from "./TriggerCheckoutButton";
 import { PRODUCTS } from "./Playground/ProductsGroup";
+import { CHECKOUT_APPLICATIONS } from "../../constants";
 
 const meta = {
   title: "Checkout",
   component: TriggerCheckoutButton,
-  args: {},
+  args: {
+    applicationKey: CHECKOUT_APPLICATIONS[0].applicationKey,
+  },
   argTypes: {
+    applicationKey: {
+      name: "Application",
+      control: {
+        type: "radio",
+        labels: Object.fromEntries(
+          CHECKOUT_APPLICATIONS.map((a) => [a.applicationKey, a.label]),
+        ),
+      },
+      options: CHECKOUT_APPLICATIONS.map((a) => a.applicationKey),
+    },
     mode: { table: { disable: true } },
     products: { table: { disable: true } },
   },
@@ -26,11 +39,13 @@ type CartSettingsArgs = {
   applyDiscount?: boolean;
   priceRoundingMode?: string;
   taxCalculationMode?: string;
+  currency?: string;
 };
 
 interface StandardWrapperProps extends CartSettingsArgs {
   quantities: Record<QuantityKey, number>;
   mode: "fullCheckout" | "paymentOnly";
+  applicationKey: string;
 }
 
 const StandardWrapper: FC<StandardWrapperProps> = ({
@@ -41,6 +56,7 @@ const StandardWrapper: FC<StandardWrapperProps> = ({
   applyDiscount,
   priceRoundingMode,
   taxCalculationMode,
+  applicationKey,
 }) => {
   const products = PRODUCTS.map((p) => ({
     productId: p.id,
@@ -56,6 +72,7 @@ const StandardWrapper: FC<StandardWrapperProps> = ({
       applyDiscount={applyDiscount}
       priceRoundingMode={priceRoundingMode}
       taxCalculationMode={taxCalculationMode}
+      applicationKey={applicationKey}
     />
   );
 };
@@ -130,6 +147,25 @@ export const Express: Story = {
     productId: PRODUCTS[0].description,
     ...CART_SETTINGS_ARGS,
   },
+  render: (
+    args: CartSettingsArgs & {
+      mode: string;
+      productId?: string;
+      applicationKey: string;
+    },
+  ) => (
+    <TriggerCheckoutButton
+      mode={args.mode as "express"}
+      productId={args.productId}
+      country={args.country}
+      currency={args.currency}
+      signedIn={args.signedIn}
+      applyDiscount={args.applyDiscount}
+      priceRoundingMode={args.priceRoundingMode}
+      taxCalculationMode={args.taxCalculationMode}
+      applicationKey={args.applicationKey}
+    />
+  ),
 };
 
 const STANDARD_STORY_CONFIG = {
@@ -146,6 +182,7 @@ const STANDARD_STORY_CONFIG = {
         applyDiscount={args.applyDiscount}
         priceRoundingMode={args.priceRoundingMode}
         taxCalculationMode={args.taxCalculationMode}
+        applicationKey={args.applicationKey}
       />
     );
   },

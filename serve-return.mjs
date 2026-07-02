@@ -7,7 +7,7 @@ const server = http.createServer((req, res) => {
   res.writeHead(200, { "Content-Type": "text/html" });
   res.end(`<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Return</title></head>
+<head><meta charset="UTF-8"><title>Return</title><script>if(window.self!==window.top){window.top.location.href=window.self.location.href;}</script></head>
 <body>
   <div>
     Payment processed. It is your responsibility to build a result or a

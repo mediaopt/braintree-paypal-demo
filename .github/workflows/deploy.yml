@@ -34,6 +34,7 @@ jobs:
           VITE_CTP_PROJECT_KEY: ${{ secrets.VITE_CTP_PROJECT_KEY }}
           VITE_CTP_REGION: ${{ secrets.VITE_CTP_REGION }}
           VITE_CTP_APPLICATION_KEY: ${{ secrets.VITE_CTP_APPLICATION_KEY }}
+          VITE_CTP_FULL_APPLICATION_KEY: ${{ secrets.VITE_CTP_FULL_APPLICATION_KEY }}
           VITE_CTP_CLIENT_ID: ${{ secrets.VITE_CTP_CLIENT_ID }}
           VITE_CTP_CLIENT_SECRET: ${{ secrets.VITE_CTP_CLIENT_SECRET }}
           VITE_CTP_SCOPE: ${{ secrets.VITE_CTP_SCOPE }}

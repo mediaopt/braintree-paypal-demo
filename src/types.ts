@@ -6,6 +6,11 @@ export type BraintreeCheckoutMode =
   | "express"
   // | "pureVault";
 
+export interface CheckoutApplication {
+  label: string;
+  applicationKey: string;
+}
+
 type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 
 export type CartStateData = Mutable<

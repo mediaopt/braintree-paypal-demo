@@ -1,12 +1,25 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Playground } from "./Playground";
-import { labelMap } from "../../../constants.ts";
+import { labelMap, CHECKOUT_APPLICATIONS } from "../../../constants.ts";
 
 const meta = {
   title: "Playground",
   component: Playground,
-  args: {},
+  args: {
+    mode: "fullCheckout" as const,
+    applicationKey: CHECKOUT_APPLICATIONS[0].applicationKey,
+  },
   argTypes: {
+    applicationKey: {
+      name: "Application",
+      control: {
+        type: "radio",
+        labels: Object.fromEntries(
+          CHECKOUT_APPLICATIONS.map((a) => [a.applicationKey, a.label]),
+        ),
+      },
+      options: CHECKOUT_APPLICATIONS.map((a) => a.applicationKey),
+    },
     mode: {
       options: Object.keys(labelMap),
       control: {
@@ -21,7 +34,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
-    mode: "fullCheckout",
-  },
+  args: {}
 };

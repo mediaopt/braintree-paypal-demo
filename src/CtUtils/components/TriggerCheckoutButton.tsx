@@ -28,6 +28,7 @@ interface TriggerCheckoutButtonProps {
   applyDiscount?: boolean;
   priceRoundingMode?: RoundingMode;
   taxCalculationMode?: TaxCalculationMode;
+  applicationKey: string;
 }
 
 export const TriggerCheckoutButton = ({
@@ -40,6 +41,7 @@ export const TriggerCheckoutButton = ({
   applyDiscount,
   priceRoundingMode,
   taxCalculationMode,
+  applicationKey,
 }: TriggerCheckoutButtonProps) => {
   const [loading, setLoading] = useState(false);
   const [mountedCartId, setMountedCartId] = useState<string | null>(null);
@@ -75,7 +77,7 @@ export const TriggerCheckoutButton = ({
       if (!newCart) return;
 
       if (mode === "fullCheckout" || mode === "paymentOnly") {
-        await loadStandardCheckout(newCart.id, mode);
+        await loadStandardCheckout(newCart.id, mode, applicationKey);
       } else {
         setMountedCartId(newCart.id);
       }
@@ -91,9 +93,10 @@ export const TriggerCheckoutButton = ({
       loadExpress({
         cartId: mountedCartId,
         cartDraft: cartDraftFromLocal(localDraft),
+        applicationKey,
       }).catch(console.log);
     }
-  }, [mountedCartId]);
+  }, [mountedCartId, applicationKey]);
 
   return (
     <>

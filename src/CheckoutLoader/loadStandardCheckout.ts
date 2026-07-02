@@ -4,8 +4,9 @@ import { buildPaymentTemplateData } from "./session.ts";
 export const loadStandardCheckout = async (
   cartId: string,
   mode: "fullCheckout" | "paymentOnly",
+  applicationKey: string,
 ): Promise<void> => {
-  const paymentData = await buildPaymentTemplateData(cartId);
+  const paymentData = await buildPaymentTemplateData(cartId, applicationKey);
   try {
     if (mode === "paymentOnly") {
       paymentFlow(paymentData);

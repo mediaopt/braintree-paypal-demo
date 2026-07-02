@@ -1,4 +1,5 @@
 import { apiRoot } from "../client/ctAPI.ts";
+import { getCart } from "./cart.ts";
 import type { Cart, Product } from "@commercetools/platform-sdk";
 import type { ClientResponse } from "@commercetools/ts-client";
 
@@ -24,17 +25,27 @@ export const addProductToCart = async (
   productId: string,
   quantity: number = 1,
 ): Promise<ClientResponse<Cart>> => {
-  return apiRoot
-    .carts()
-    .withId({ ID: cartId })
-    .post({
-      body: {
-        version: cartVersion,
-        actions: [{ action: "addLineItem", productId, variantId: 1, quantity }],
-      },
-      queryArgs: CART_EXPAND,
-    })
-    .execute();
+  const attempt = (version: number) =>
+    apiRoot
+      .carts()
+      .withId({ ID: cartId })
+      .post({
+        body: {
+          version,
+          actions: [{ action: "addLineItem", productId, variantId: 1, quantity }],
+        },
+        queryArgs: CART_EXPAND,
+      })
+      .execute();
+
+  try {
+    return await attempt(cartVersion);
+  } catch (error) {
+    if ((error as { statusCode?: number }).statusCode !== 409) throw error;
+    const { body: freshCart } = await getCart(cartId);
+    if (!freshCart) throw error;
+    return attempt(freshCart.version);
+  }
 };
 
 export const removeProductFromCart = async (
@@ -42,15 +53,25 @@ export const removeProductFromCart = async (
   cartVersion: number,
   lineItemId: string,
 ): Promise<ClientResponse<Cart>> => {
-  return apiRoot
-    .carts()
-    .withId({ ID: cartId })
-    .post({
-      body: {
-        version: cartVersion,
-        actions: [{ action: "removeLineItem", lineItemId, quantity: 1 }],
-      },
-      queryArgs: CART_EXPAND,
-    })
-    .execute();
+  const attempt = (version: number) =>
+    apiRoot
+      .carts()
+      .withId({ ID: cartId })
+      .post({
+        body: {
+          version,
+          actions: [{ action: "removeLineItem", lineItemId, quantity: 1 }],
+        },
+        queryArgs: CART_EXPAND,
+      })
+      .execute();
+
+  try {
+    return await attempt(cartVersion);
+  } catch (error) {
+    if ((error as { statusCode?: number }).statusCode !== 409) throw error;
+    const { body: freshCart } = await getCart(cartId);
+    if (!freshCart) throw error;
+    return attempt(freshCart.version);
+  }
 };

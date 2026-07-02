@@ -14,8 +14,9 @@ export type PaymentTemplateData = Pick<
 
 export const buildPaymentTemplateData = async (
   cartId: string,
+  applicationKey: string,
 ): Promise<PaymentTemplateData> => {
-  const sessionId = await getSessionId(cartId);
+  const sessionId = await getSessionId(cartId, applicationKey);
   if (typeof (window as any).process === "undefined") {
     (window as any).process = { env: { NODE_ENV: "development" } };
   }
@@ -32,7 +33,7 @@ export const buildPaymentTemplateData = async (
   };
 };
 
-export const getSessionId = async (cartId: string): Promise<string> => {
+export const getSessionId = async (cartId: string, applicationKey: string): Promise<string> => {
   const oAuthToken = await fetchCoCoOAuthToken();
 
   const res = await fetch(
@@ -46,7 +47,7 @@ export const getSessionId = async (cartId: string): Promise<string> => {
       body: JSON.stringify({
         cart: { cartRef: { id: cartId } },
         metadata: {
-          applicationKey: import.meta.env.VITE_CTP_APPLICATION_KEY,
+          applicationKey: applicationKey,
         },
       }),
     },

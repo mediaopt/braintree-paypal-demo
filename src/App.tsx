@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Playground } from "./CtUtils/components/Playground/Playground";
-import { labelMap } from "./constants.ts";
+import { labelMap, CHECKOUT_APPLICATIONS } from "./constants.ts";
 import type { BraintreeCheckoutMode } from "./types.ts";
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
           </label>
         ))}
       </div>
-      <Playground mode={flow} />
+      <Playground mode={flow} applicationKey={CHECKOUT_APPLICATIONS[0].applicationKey} />
     </div>
   );
 }

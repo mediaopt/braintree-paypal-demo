@@ -17,15 +17,16 @@ import { CartProvider, useCart } from "../../context/CartContext.tsx";
 
 interface CartWrapperProps {
   mode: BraintreeCheckoutMode;
+  applicationKey: string;
 }
 
-export const Playground = ({ mode }: CartWrapperProps) => (
+export const Playground = ({ mode, applicationKey }: CartWrapperProps) => (
   <CartProvider mode={mode}>
-    <PlaygroundContent mode={mode} />
+    <PlaygroundContent mode={mode} applicationKey={applicationKey} />
   </CartProvider>
 );
 
-const PlaygroundContent = ({ mode }: CartWrapperProps) => {
+const PlaygroundContent = ({ mode, applicationKey }: CartWrapperProps) => {
   const {
     cart: serverCart,
     setCart: setServerCart,
@@ -69,14 +70,14 @@ const PlaygroundContent = ({ mode }: CartWrapperProps) => {
           availableShippingMethods={availableShippingMethods}
           allowSubmit={localStateChanged}
         />
-        {mode === "express" ? <ProductsGroup isExpress /> : <ProductsGroup />}
+        {mode === "express" ? <ProductsGroup isExpress applicationKey={applicationKey} /> : <ProductsGroup applicationKey={applicationKey} />}
         {serverCart && (mode === "fullCheckout" || mode === "paymentOnly") && (
           <CartSummary
             cart={serverCart}
             cartError={cartError}
             onLoadCheckout={
               isStandardMode(mode)
-                ? () => loadStandardCheckout(serverCart.id, mode)
+                ? () => loadStandardCheckout(serverCart.id, mode, applicationKey)
                 : undefined
             }
           />

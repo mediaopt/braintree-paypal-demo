@@ -15,9 +15,10 @@ import { CART_COUNTRY, CART_CURRENCY, DEFAULT_CUSTOMER_ID } from "../constants.t
 interface LoadVaultWithoutPurchaseProps {
   cartId?: string;
   cartDraft: CartDraft;
+  applicationKey: string;
 }
 
-const loadVaultWithoutPurchase = async (cartId: string | undefined, cartDraft: CartDraft): Promise<void> => {
+const loadVaultWithoutPurchase = async (cartId: string | undefined, cartDraft: CartDraft, applicationKey: string): Promise<void> => {
   let resolvedCartId: string | undefined;
 
   if (cartId) {
@@ -37,7 +38,7 @@ const loadVaultWithoutPurchase = async (cartId: string | undefined, cartDraft: C
   }
 
   if (!resolvedCartId) return;
-  const paymentData = await buildPaymentTemplateData(resolvedCartId);
+  const paymentData = await buildPaymentTemplateData(resolvedCartId, applicationKey);
   mountExpressMethods(paymentData, {
     countryCode: cartDraft.country ?? CART_COUNTRY,
     currencyCode: cartDraft.currency ?? CART_CURRENCY,
@@ -46,11 +47,11 @@ const loadVaultWithoutPurchase = async (cartId: string | undefined, cartDraft: C
   }).catch(console.log);
 };
 
-export const LoadVaultWithoutPurchase: FC<LoadVaultWithoutPurchaseProps> = ({ cartId, cartDraft }) => {
+export const LoadVaultWithoutPurchase: FC<LoadVaultWithoutPurchaseProps> = ({ cartId, cartDraft, applicationKey }) => {
   // cartDraft intentionally omitted from deps — vault without purchase is initialized once per cart
   useEffect(() => {
-    loadVaultWithoutPurchase(cartId, cartDraft).catch(console.error);
-  }, [cartId]);
+    loadVaultWithoutPurchase(cartId, cartDraft, applicationKey).catch(console.error);
+  }, [cartId, applicationKey]);
 
   return (
     <>

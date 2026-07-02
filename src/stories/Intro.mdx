@@ -26,6 +26,8 @@ We use Vite for the development environment, so the environment variables should
 
 **Required for checkout** — passed when initializing the commercetools checkout session:
 
+commercetools lets you create multiple checkout applications, each configured with its own set of payment methods. This demo showcases two applications of different types — Payment only and Complete checkout — to illustrate how the same shop can use different checkout experiences. That is why there are two application key variables below. For your own setup, define it the way you need.
+
 <table>
   <thead>
     <tr>
@@ -39,9 +41,16 @@ We use Vite for the development environment, so the environment variables should
         <code>VITE_CTP_APPLICATION_KEY</code>
       </td>
       <td>
-        commercetools checkout application key, passed when creating the
-        checkout session — create it in the Merchant Center if you don't have
-        one
+        Application key for the <strong>Payment only</strong> checkout
+        application
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>VITE_CTP_FULL_APPLICATION_KEY</code>
+      </td>
+      <td>
+        Application key for the <strong>Complete checkout</strong> application
       </td>
     </tr>
     <tr>
@@ -106,9 +115,14 @@ The real implementation of the checkout session is covered by the `CheckoutLoade
 ### Checkout modes
 
 - Standard: commercetools standard checkout flow, must be called from a checkout page.
-- Express: commercetools express checkout flow, can be called for any page. We recommend it for buying the product directly from the product page.
+- Payment: only payment buttons are provided, dedicated for building in your own checkout page, must be called from a checkout page.
+- Express: commercetools express checkout flow, can be called for any page. We use it for buying the product directly from the product page.
 
 See also commercetools documentation for [checkout](https://docs.commercetools.com/checkout/connectors-and-applications).
+
+### Switching applications
+
+You can switch between the configured applications at runtime using the **Application** radio control in the Storybook controls panel — no restart or environment variable change needed.
 
 ## Storybook
 

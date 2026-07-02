@@ -17,6 +17,7 @@ interface ProductCardProps {
   isExpress?: boolean;
   isSelected?: boolean;
   onSelect?: () => void;
+  applicationKey: string;
 }
 
 export const ProductCard = ({
@@ -24,6 +25,7 @@ export const ProductCard = ({
   isExpress,
   isSelected,
   onSelect,
+  applicationKey,
 }: ProductCardProps) => {
   const { cart, setCart, localCartData } = useCart();
   const [product, setProduct] = useState<Product | undefined>(undefined);
@@ -125,6 +127,7 @@ export const ProductCard = ({
                 loadExpress({
                   cartId: newCart?.id,
                   cartDraft: cartDraftFromLocal(localCartData),
+                  applicationKey,
                 });
               }
             }}

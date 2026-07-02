@@ -6,13 +6,15 @@ import { CART_COUNTRY, CART_CURRENCY } from "../constants.ts";
 interface ExpressCheckoutProps {
   cartId: string;
   cartDraft: CartDraft;
+  applicationKey: string;
 }
 
 export const loadExpress = async ({
   cartId,
   cartDraft,
+  applicationKey,
 }: ExpressCheckoutProps) => {
-  const paymentData = await buildPaymentTemplateData(cartId);
+  const paymentData = await buildPaymentTemplateData(cartId, applicationKey);
   mountExpressMethods(paymentData, {
     countryCode: cartDraft.country ?? CART_COUNTRY,
     currencyCode: cartDraft.currency ?? CART_CURRENCY,

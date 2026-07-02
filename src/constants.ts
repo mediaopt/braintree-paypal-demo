@@ -1,5 +1,5 @@
 import type { Address } from "@commercetools/platform-sdk";
-import type { BraintreeCheckoutMode } from "./types.ts";
+import type { BraintreeCheckoutMode, CheckoutApplication } from "./types.ts";
 
 export const DEFAULT_CUSTOMER_ID = "2d83f470-fb59-4f9e-ab71-dd27b30ef266";
 
@@ -64,3 +64,14 @@ export const labelMap: Record<BraintreeCheckoutMode, string> = {
   express: "Buy now",
   // pureVault: "Vault without purchase",
 };
+
+export const CHECKOUT_APPLICATIONS: CheckoutApplication[] = [
+  {
+    label: "Payment only",
+    applicationKey: import.meta.env.VITE_CTP_APPLICATION_KEY,
+  },
+  {
+    label: "Complete checkout",
+    applicationKey: import.meta.env.VITE_CTP_FULL_APPLICATION_KEY,
+  },
+];
