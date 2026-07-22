@@ -86,9 +86,8 @@ const CART_SETTINGS_ARG_TYPES: any = {
     table: { category: "Cart settings" },
   },
   currency: {
-    if: { arg: "country", eq: "Poland" },
     control: "radio",
-    options: ["PLN", "EUR"],
+    options: ["EUR", "USD", "PLN"],
     table: { category: "Cart settings" },
   },
   signedIn: {
@@ -115,7 +114,7 @@ const CART_SETTINGS_ARG_TYPES: any = {
 
 const CART_SETTINGS_ARGS = {
   country: "Germany",
-  currency: "PLN",
+  currency: "EUR",
   signedIn: false,
   applyDiscount: false,
   priceRoundingMode: "HalfEven",

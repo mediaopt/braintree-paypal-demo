@@ -24,7 +24,7 @@ export const Country: FC<CountryProps> = ({ onCartUpdate }) => {
       country,
       billingAddress: address,
       shippingAddress: address,
-      currency: country === "PL" ? "PLN" : "EUR",
+      currency: country === "PL" ? "PLN" : country === "US" ? "USD" : "EUR",
     });
   };
 

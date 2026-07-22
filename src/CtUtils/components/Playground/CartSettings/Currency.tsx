@@ -2,17 +2,20 @@ import { type FC, useState } from "react";
 import type { OnLocalCartUpdate } from "../../../../types";
 import { RadioGroup } from "./RadioGroup";
 
-const OPTIONS = [
-  { value: "PLN", label: "PLN" },
-  { value: "EUR", label: "EUR" },
-];
-
 interface CurrencyProps {
   onCartUpdate: OnLocalCartUpdate;
+  primaryCurrency: string;
 }
 
-export const Currency: FC<CurrencyProps> = ({ onCartUpdate }) => {
-  const [value, setValue] = useState("PLN");
+export const Currency: FC<CurrencyProps> = ({
+  onCartUpdate,
+  primaryCurrency,
+}) => {
+  const OPTIONS = [
+    { value: primaryCurrency, label: primaryCurrency },
+    { value: "EUR", label: "EUR" },
+  ];
+  const [value, setValue] = useState(primaryCurrency);
 
   const handleChange = (currency: string) => {
     setValue(currency);

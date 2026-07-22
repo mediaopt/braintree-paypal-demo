@@ -59,8 +59,12 @@ export const CartLevelSettings: FC<CartLevelSettingsProps> = ({
         {/* Row 2: settings */}
         <div className="flex gap-4 flex-wrap">
           <Country onCartUpdate={handleCreationUpdate} />
-          {selectedCountry === "PL" && (
-            <Currency onCartUpdate={handleCreationUpdate} />
+          {(selectedCountry === "PL" || selectedCountry === "US") && (
+            <Currency
+              key={selectedCountry}
+              onCartUpdate={handleCreationUpdate}
+              primaryCurrency={selectedCountry === "PL" ? "PLN" : "USD"}
+            />
           )}
           <TaxMode onCartUpdate={handleCreationUpdate} />
         </div>
