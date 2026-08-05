@@ -8,7 +8,7 @@ import {
 } from "react";
 import type { Cart } from "@commercetools/platform-sdk";
 import { createCart, updateCart as updateCartApi } from "../services/cart.ts";
-import type { BraintreeCheckoutMode, CartStateData, OnLocalCartUpdate } from "../../types.ts";
+import type { CheckoutMode, CartStateData, OnLocalCartUpdate } from "../../types.ts";
 import { handleCartActions } from "../components/Playground/handleCartActions.ts";
 import { cartDraftFromLocal } from "../../helpers.ts";
 // import { DEFAULT_CUSTOMER_ID } from "../../constants.ts";
@@ -25,7 +25,7 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
-export const CartProvider: FC<PropsWithChildren<{ mode: BraintreeCheckoutMode }>> = ({ children, mode }) => {
+export const CartProvider: FC<PropsWithChildren<{ mode: CheckoutMode }>> = ({ children, mode }) => {
   const [cart, setCart] = useState<Cart | undefined>(undefined);
   const [localCartData, setLocalCartData] = useState<CartStateData>({});
   const [cartError, setCartError] = useState<string | undefined>(undefined);

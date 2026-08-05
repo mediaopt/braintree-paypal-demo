@@ -1,10 +1,10 @@
 import type { CartDraft } from "@commercetools/platform-sdk";
-import type { BraintreeCheckoutMode, CartStateData } from "./types.ts";
+import type { CheckoutMode, CartStateData } from "./types.ts";
 import { ADDRESSES, CART_COUNTRY, CART_CURRENCY } from "./constants.ts";
 
 export const cartDraftFromLocal = (
   localDraft?: CartStateData,
-  mode?: BraintreeCheckoutMode,
+  mode?: CheckoutMode,
 ): CartDraft => {
   const country = localDraft?.country ?? CART_COUNTRY;
   const currency = localDraft?.currency ?? CART_CURRENCY;

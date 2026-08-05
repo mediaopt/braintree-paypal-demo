@@ -6,8 +6,9 @@ import type {
 } from "@commercetools/platform-sdk";
 import { createCart } from "../services/cart";
 import { DEFAULT_CUSTOMER_ID, DISCOUNT_CODES } from "../../constants";
+import { getConnectorLabel } from "../../connector";
 import { Button } from "./Button.tsx";
-import type { BraintreeCheckoutMode, CartStateData } from "../../types.ts";
+import type { CheckoutMode, CartStateData, CountryCode } from "../../types.ts";
 import { cartDraftFromLocal } from "../../helpers.ts";
 import { loadStandardCheckout } from "../../CheckoutLoader/loadStandardCheckout.ts";
 import { loadExpress } from "../../CheckoutLoader/loadExpress.ts";
@@ -19,10 +20,10 @@ interface LineItem {
 }
 
 interface TriggerCheckoutButtonProps {
-  mode: BraintreeCheckoutMode;
+  mode: CheckoutMode;
   products?: LineItem[];
   productId?: string;
-  country?: string;
+  country?: CountryCode;
   currency?: string;
   signedIn?: boolean;
   applyDiscount?: boolean;
@@ -107,7 +108,7 @@ export const TriggerCheckoutButton = ({
         trigger the load checkout.
       </div>
       <div className="my-4">
-        This is a demo for the Braintree commercetools connector. It
+        This is a demo for the {getConnectorLabel()} commercetools connector. It
         demonstrates features relevant for different merchants and emphasizes
         payment-relevant aspects rather than buyer experience. It is not an
         official shop implementation — it is your responsibility to implement

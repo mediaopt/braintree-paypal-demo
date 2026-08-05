@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import type { FC } from "react";
 import { TriggerCheckoutButton } from "./TriggerCheckoutButton";
-import { PRODUCTS } from "./Playground/ProductsGroup";
-import { CHECKOUT_APPLICATIONS } from "../../constants";
+import { PRODUCTS, CHECKOUT_APPLICATIONS } from "../../constants";
+import type { CountryCode } from "../../types.ts";
 
 const meta = {
   title: "Checkout",
@@ -34,7 +34,7 @@ type Story = StoryObj<typeof meta>;
 type QuantityKey = (typeof PRODUCTS)[number]["description"];
 
 type CartSettingsArgs = {
-  country?: string;
+  country?: CountryCode;
   signedIn?: boolean;
   applyDiscount?: boolean;
   priceRoundingMode?: string;
@@ -113,7 +113,8 @@ const CART_SETTINGS_ARG_TYPES: any = {
 };
 
 const CART_SETTINGS_ARGS = {
-  country: "Germany",
+  // "Germany" is the pre-mapping control label; the country arg's `mapping` (above) resolves it to "DE" before render.
+  country: "Germany" as CountryCode,
   currency: "EUR",
   signedIn: false,
   applyDiscount: false,
