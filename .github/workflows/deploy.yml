@@ -31,6 +31,11 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
+      - name: Compute base path
+        # Project Pages serve from /<repo>/<connector>/, not /<connector>/ — the base path must
+        # include the repository name segment or Storybook's asset URLs resolve one level too high.
+        id: basepath
+        run: echo "path=/${GITHUB_REPOSITORY#*/}/${{ matrix.connector }}/" >> "$GITHUB_OUTPUT"
       - name: Build Storybook (${{ matrix.connector }})
         # VITE_CTP_CLIENT_SECRET is compiled into the published bundle (Vite inlines VITE_-prefixed
         # vars at build time) and this build is deployed to a public GitHub Pages URL, so these
@@ -38,7 +43,7 @@ jobs:
         # Each connector reads its own secret set via a per-connector prefix (see README).
         run: npm run build-storybook
         env:
-          VITE_BASE_PATH: /${{ matrix.connector }}/
+          VITE_BASE_PATH: ${{ steps.basepath.outputs.path }}
           VITE_CTP_PROJECT_KEY: ${{ secrets[format('{0}_VITE_CTP_PROJECT_KEY', matrix.secretPrefix)] }}
           VITE_CTP_REGION: ${{ secrets[format('{0}_VITE_CTP_REGION', matrix.secretPrefix)] }}
           VITE_CTP_APPLICATION_KEY: ${{ secrets[format('{0}_VITE_CTP_APPLICATION_KEY', matrix.secretPrefix)] }}
@@ -47,7 +52,7 @@ jobs:
           VITE_CTP_CLIENT_SECRET: ${{ secrets[format('{0}_VITE_CTP_CLIENT_SECRET', matrix.secretPrefix)] }}
           VITE_CTP_SCOPE: ${{ secrets[format('{0}_VITE_CTP_SCOPE', matrix.secretPrefix)] }}
       - name: Point the return page back to this connector's Storybook
-        run: sed -i "s|__BACK_TO_STORYBOOK__|/${{ matrix.connector }}/|" storybook-static/return/index.html
+        run: sed -i "s|__BACK_TO_STORYBOOK__|${{ steps.basepath.outputs.path }}|" storybook-static/return/index.html
       - uses: actions/upload-artifact@v4
         with:
           name: storybook-${{ matrix.connector }}

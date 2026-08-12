@@ -42,16 +42,18 @@ npx vitest               # run story-based tests (headless Chromium via Playwrig
 - `https://<org>.github.io/<repo>/braintree/`
 - `https://<org>.github.io/<repo>/paypal/`
 
-A `build` job runs as a matrix over `braintree` and `paypal`. Each matrix leg builds Storybook with `VITE_BASE_PATH` set to its own subpath (`/braintree/` or `/paypal/`) and reads its commercetools credentials from a **connector-prefixed** set of repo secrets, e.g. `BRAINTREE_VITE_CTP_PROJECT_KEY` / `PAYPAL_VITE_CTP_PROJECT_KEY`, `BRAINTREE_VITE_CTP_CLIENT_SECRET` / `PAYPAL_VITE_CTP_CLIENT_SECRET`, and so on for every `VITE_CTP_*` variable listed in `env.template`. Add both prefixed sets under the repo's Actions secrets before deploying — each pair must point at its own disposable/sandboxed commercetools project (see the client-secret warning above).
+A `build` job runs as a matrix over `braintree` and `paypal`. Each matrix leg builds Storybook with `VITE_BASE_PATH` set to `/<repo>/braintree/` or `/<repo>/paypal/` — the repository name segment is required because this is a GitHub *project* Pages site (served from `<org>.github.io/<repo>/...`, not `<org>.github.io/...`); a base path missing that segment resolves Storybook's asset URLs one level too high and breaks the deployed site. The workflow computes it from `GITHUB_REPOSITORY` rather than hardcoding it. Each leg also reads its commercetools credentials from a **connector-prefixed** set of repo secrets, e.g. `BRAINTREE_VITE_CTP_PROJECT_KEY` / `PAYPAL_VITE_CTP_PROJECT_KEY`, `BRAINTREE_VITE_CTP_CLIENT_SECRET` / `PAYPAL_VITE_CTP_CLIENT_SECRET`, and so on for every `VITE_CTP_*` variable listed in `env.template`. Add both prefixed sets under the repo's Actions secrets before deploying — each pair must point at its own disposable/sandboxed commercetools project (see the client-secret warning above).
 
 The two builds are then merged into one Pages artifact, with a small generated `index.html` at the root linking to each connector's subpath, and deployed in a single `deploy` job.
 
 ### Return-page links
 
-The post-checkout return page (`public/return/index.html`, copied into every Storybook build via `staticDirs`) has its "← Back to Storybook" link templated as the placeholder `__BACK_TO_STORYBOOK__`. The `build` job substitutes that placeholder with the matrix leg's own subpath before uploading, so:
+The post-checkout return page (`public/return/index.html`, copied into every Storybook build via `staticDirs`) has its "← Back to Storybook" link templated as the placeholder `__BACK_TO_STORYBOOK__`. The `build` job substitutes that placeholder with the matrix leg's own base path (the same `/<repo>/<connector>/` computed above) before uploading, so:
 
-- the Braintree build's deployed return page (`.../braintree/return/`) links back to `.../braintree/`
-- the PayPal build's deployed return page (`.../paypal/return/`) links back to `.../paypal/`
+- the Braintree build's deployed return page (`.../<repo>/braintree/return/`) links back to `.../<repo>/braintree/`
+- the PayPal build's deployed return page (`.../<repo>/paypal/return/`) links back to `.../<repo>/paypal/`
+
+If the placeholder is ever left unsubstituted (opening the file directly, or serving it locally via Storybook's `staticDirs` copy), a small inline script falls back to `../` — the parent directory of `return/` is always that page's own Storybook root, so the link still works.
 
 Each connector's commercetools Checkout application (`VITE_CTP_APPLICATION_KEY` / `VITE_CTP_FULL_APPLICATION_KEY` in Merchant Center) must have its return URL configured to point at its own deployed `return/` path, so a customer redirected back from a Braintree payment lands on the Braintree return page (and likewise for PayPal) rather than the other connector's.
 
