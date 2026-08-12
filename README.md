@@ -1,8 +1,8 @@
-# Braintree Payment Demo
+# commercetools Checkout Connector Demo
 
-> **Note:** This is a demo for the Braintree commercetools connector. It demonstrates features relevant for different merchants and emphasizes payment-relevant aspects rather than buyer experience. It is not an official shop implementation — it is your responsibility to implement all surrounding pages in your shop. For implementation guidance refer to the [official commercetools documentation](https://docs.commercetools.com) and the [Checkout Browser SDK documentation](https://docs.commercetools.com/checkout/browser-sdk).
+> **Note:** This is a demo for a commercetools Checkout payment connector (Braintree or PayPal, depending on configuration — see `VITE_CTP_PROJECT_KEY` in `env.template`). It demonstrates features relevant for different merchants and emphasizes payment-relevant aspects rather than buyer experience. It is not an official shop implementation — it is your responsibility to implement all surrounding pages in your shop. For implementation guidance refer to the [official commercetools documentation](https://docs.commercetools.com) and the [Checkout Browser SDK documentation](https://docs.commercetools.com/checkout/browser-sdk).
 
-A minimalistic demo environment for Braintree payment methods integrated with commercetools. Built with React, Vite, TypeScript, and Storybook.
+A minimalistic demo environment for commercetools Checkout payment connectors (Braintree or PayPal). Built with React, Vite, TypeScript, and Storybook.
 
 Storybook is the primary demo surface. The React app handles only the parts not directly related to the payment process (cart creation and configuration).
 

@@ -1,5 +1,6 @@
 import { createApiBuilderFromCtpClient } from "@commercetools/platform-sdk";
 import { ClientBuilder } from "@commercetools/ts-client";
+import { getConnectorLabel } from "../../connector";
 
 // --- Configuration ---
 const projectKey = import.meta.env.VITE_CTP_PROJECT_KEY ?? "";
@@ -11,7 +12,7 @@ const scopes = [import.meta.env.VITE_CTP_SCOPE ?? ""];
 
 if (import.meta.env.PROD) {
   console.warn(
-    "[demoBraintree] This demo calls the commercetools Platform API directly from the browser using a client-credentials secret baked into the build. Never point a public build at a production commercetools project — use a disposable/sandboxed project scoped to this demo only.",
+    `[demo${getConnectorLabel()}] This demo calls the commercetools Platform API directly from the browser using a client-credentials secret baked into the build. Never point a public build at a production commercetools project — use a disposable/sandboxed project scoped to this demo only.`,
   );
 }
 

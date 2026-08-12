@@ -1,10 +1,11 @@
 import { Meta } from "@storybook/addon-docs/blocks";
+import { getConnectorLabel } from "../connector";
 
 <Meta title="Introduction" />
 
-# Braintree Payment Demo
+# {getConnectorLabel()} Payment Demo
 
-This demo is intended to showcase the Braintree payment methods integration with commercetools. It covers the checkout session implementation and flows for different payment methods, as well as some of the project/shop level settings supported by the Braintree commercetools connector.
+This demo is intended to showcase the {getConnectorLabel()} payment methods integration with commercetools. It covers the checkout session implementation and flows for different payment methods, as well as some of the project/shop level settings supported by the {getConnectorLabel()} commercetools connector.
 
 - [Setup](#setup)
 - [Structure](#structure)
@@ -18,7 +19,7 @@ This demo is intended to showcase the Braintree payment methods integration with
 
 ## Setup
 
-Our own demo environment is already provided. To test it with your own commercetools project, you can clone the repository and set up your own environment variables, install the Braintree commercetools checkout connector for your project and create checkout application.
+Our own demo environment is already provided. To test it with your own commercetools project, you can clone the repository and set up your own environment variables, install the {getConnectorLabel()} commercetools checkout connector for your project and create checkout application.
 
 We use Vite for the development environment, so the environment variables should be prefixed with `VITE_` to be available in the code. If your shop is built with a different technology, you can adjust the environment variable names.
 
@@ -126,7 +127,7 @@ You can switch between the configured applications at runtime using the **Applic
 
 ## Storybook
 
-The demo is built with Storybook, which allows to easily test different scenarios and configurations. All payments supported by the Braintree connector are available in this Storybook, and you can also adjust the cart settings to see how they affect the checkout flow. We have two main demo modes - Chekout and playgorund.
+The demo is built with Storybook, which allows to easily test different scenarios and configurations. All payments supported by the {getConnectorLabel()} connector are available in this Storybook, and you can also adjust the cart settings to see how they affect the checkout flow. We have two main demo modes - Chekout and playgorund.
 
 Checkout mode gives the end-to-end checkout experience starting from the moment the customer clicks the checkout button and until the payment is completed. It utilized minimalistic cart configuration with storybook controls. Playground gives more visual experience of the cart configuration and covers the settings, that should be loaded dynamically, such as shipping for different countries.
 
@@ -140,13 +141,13 @@ A valid commercetools cart is required to start the checkout session, but differ
 
 **_Cart requirements: cart total price above 0, shipping address, billing address and customer email_**
 
-The default mode. You can add products, adjust cart-level settings (country, tax mode, shipping, discounts), and then click **Load checkout** to start the Braintree payment session. In the Playground mode a cart is created on mount and can be edited later, in checkout mode - upon button press the cart is created with all predefined settings.
+The default mode. You can add products, adjust cart-level settings (country, tax mode, shipping, discounts), and then click **Load checkout** to start the {getConnectorLabel()} payment session. In the Playground mode a cart is created on mount and can be edited later, in checkout mode - upon button press the cart is created with all predefined settings.
 
 #### Payment only
 
 **_Cart requirements: cart total price above 0, shipping address, billing address and customer email_**
 
-Instead of full checkout form only payment buttons will be rendered. Intended for merchants who already have own configured checkout and only need the payment module. You can add products, adjust cart-level settings (country, tax mode, shipping, discounts), and then click **Load checkout** to start the Braintree payment session. In the Playground mode a cart is created on mount and can be edited later, in checkout mode - upon button press the cart is created with all predefined settings.
+Instead of full checkout form only payment buttons will be rendered. Intended for merchants who already have own configured checkout and only need the payment module. You can add products, adjust cart-level settings (country, tax mode, shipping, discounts), and then click **Load checkout** to start the {getConnectorLabel()} payment session. In the Playground mode a cart is created on mount and can be edited later, in checkout mode - upon button press the cart is created with all predefined settings.
 
 #### Buy Now
 
@@ -156,7 +157,7 @@ Dedicated to buy a product directly from product page. In checkout mode only one
 
 #### Vault without purchase
 
-This flow is not currently supported by the Braintree connector. If you need it, please request support in the [main connector repository](https://github.com/mediaopt/braintree-commercetools-connector).
+This flow is not currently supported by the {getConnectorLabel()} connector. If you need it, please request support in the connector's repository.
 
 ### Demo Cart
 

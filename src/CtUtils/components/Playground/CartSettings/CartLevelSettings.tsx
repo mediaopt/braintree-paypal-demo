@@ -1,15 +1,12 @@
-import { type FC, useState } from "react";
+import { type FC, useMemo, useState } from "react";
 import type { ShippingMethod } from "@commercetools/platform-sdk";
 import { GroupWrapper } from "./GroupWrapper.tsx";
-import { ShippingMethods } from "./ShippingMethods.tsx";
 import { Discount } from "./Discount.tsx";
-import { Customer } from "./Customer.tsx";
-import { PriceRoundingMode } from "./PriceRoundingMode.tsx";
-import { TaxCalculationMode } from "./TaxCalculationMode.tsx";
-import { TaxMode } from "./TaxMode.tsx";
-import { Country } from "./Country.tsx";
-import { Currency } from "./Currency.tsx";
+import { RadioSetting } from "./RadioSetting.tsx";
+import { RADIO_OPTIONS } from "./radioOptions.ts";
 import { Button } from "../../Button.tsx";
+import { formatPrice } from "../../../services/format";
+import { ADDRESSES, COUNTRY_OPTIONS, DEFAULT_CUSTOMER_ID } from "../../../../constants";
 import type { CartStateData, OnLocalCartUpdate } from "../../../../types";
 
 interface CartLevelSettingsProps {
@@ -45,6 +42,24 @@ export const CartLevelSettings: FC<CartLevelSettingsProps> = ({
 
   const hasButtons = onCreateCart || onSubmit;
 
+  const primaryCurrency =
+    selectedCountry === "PL" ? "PLN" : selectedCountry === "US" ? "USD" : undefined;
+
+  const shippingOptions = useMemo(
+    () => [
+      { value: "", label: "No shipping" },
+      ...(availableShippingMethods ?? []).map((method) => {
+        const matchingRate = method.zoneRates[0]?.shippingRates?.find((r) => r.isMatching);
+        const price = matchingRate?.price;
+        const priceLabel = price
+          ? ` — ${formatPrice(price.centAmount, price.currencyCode, price.fractionDigits)}`
+          : "";
+        return { value: method.id, label: `${method.name}${priceLabel}` };
+      }),
+    ],
+    [availableShippingMethods],
+  );
+
   return (
     <GroupWrapper title="Cart Level Settings">
       <div className="grid grid-cols-[auto_auto] gap-x-8 gap-y-4 items-start">
@@ -58,27 +73,71 @@ export const CartLevelSettings: FC<CartLevelSettingsProps> = ({
 
         {/* Row 2: settings */}
         <div className="flex gap-4 flex-wrap">
-          <Country onCartUpdate={handleCreationUpdate} />
-          {(selectedCountry === "PL" || selectedCountry === "US") && (
-            <Currency
+          <RadioSetting
+            name="country"
+            options={COUNTRY_OPTIONS}
+            onCartUpdate={handleCreationUpdate}
+            toPatch={(country) => {
+              const address = ADDRESSES[country];
+              return {
+                country,
+                billingAddress: address,
+                shippingAddress: address,
+                currency: country === "PL" ? "PLN" : country === "US" ? "USD" : "EUR",
+              };
+            }}
+          />
+          {primaryCurrency && (
+            <RadioSetting
               key={selectedCountry}
+              name="currency"
+              options={[
+                { value: primaryCurrency, label: primaryCurrency },
+                { value: "EUR", label: "EUR" },
+              ]}
               onCartUpdate={handleCreationUpdate}
-              primaryCurrency={selectedCountry === "PL" ? "PLN" : "USD"}
+              toPatch={(currency) => ({ currency })}
             />
           )}
-          <TaxMode onCartUpdate={handleCreationUpdate} />
+          <RadioSetting
+            name="taxMode"
+            options={RADIO_OPTIONS.taxMode}
+            onCartUpdate={handleCreationUpdate}
+            toPatch={(taxMode) => ({ taxMode })}
+          />
         </div>
         <div className="flex gap-4 sm:gap-8 flex-wrap">
           {availableShippingMethods && (
-            <ShippingMethods
-              methods={availableShippingMethods}
+            <RadioSetting
+              name="shippingMethod"
+              options={shippingOptions}
               onCartUpdate={onCartUpdate}
+              toPatch={(value) => ({
+                shippingMethod: value ? { typeId: "shipping-method", id: value } : undefined,
+              })}
             />
           )}
           <Discount onCartUpdate={onCartUpdate} />
-          <Customer onCartUpdate={onCartUpdate} />
-          <PriceRoundingMode onCartUpdate={onCartUpdate} />
-          <TaxCalculationMode onCartUpdate={onCartUpdate} />
+          <RadioSetting
+            name="customer"
+            options={RADIO_OPTIONS.customer}
+            onCartUpdate={onCartUpdate}
+            toPatch={(value) => ({
+              customerId: value === "existing" ? DEFAULT_CUSTOMER_ID : undefined,
+            })}
+          />
+          <RadioSetting
+            name="priceRoundingMode"
+            options={RADIO_OPTIONS.priceRoundingMode}
+            onCartUpdate={onCartUpdate}
+            toPatch={(mode) => ({ priceRoundingMode: mode })}
+          />
+          <RadioSetting
+            name="taxCalculationMode"
+            options={RADIO_OPTIONS.taxCalculationMode}
+            onCartUpdate={onCartUpdate}
+            toPatch={(mode) => ({ taxCalculationMode: mode })}
+          />
         </div>
 
         {/* Row 3: buttons (only when at least one button is relevant) */}

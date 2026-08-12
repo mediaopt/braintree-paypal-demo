@@ -1,10 +1,12 @@
-import type { ShippingMethodResourceIdentifier, Cart } from "@commercetools/platform-sdk";
+import type {
+  ShippingMethodResourceIdentifier,
+  Cart,
+} from "@commercetools/platform-sdk";
 
-export type BraintreeCheckoutMode =
-  | "fullCheckout"
-  | "paymentOnly"
-  | "express"
-  // | "pureVault";
+export type CheckoutMode = "fullCheckout" | "paymentOnly" | "express";
+// | "pureVault";
+
+export type CountryCode = "DE" | "US" | "NL" | "PL";
 
 export interface CheckoutApplication {
   label: string;
@@ -17,7 +19,6 @@ export type CartStateData = Mutable<
   Partial<
     Pick<
       Cart,
-      | "country"
       | "taxMode"
       | "priceRoundingMode"
       | "taxRoundingMode"
@@ -33,6 +34,7 @@ export type CartStateData = Mutable<
   shippingMethod?: ShippingMethodResourceIdentifier;
   discountCodes?: string[];
   currency?: string;
+  country?: CountryCode;
 };
 
 export type OnLocalCartUpdate = (partial: Partial<CartStateData>) => void;

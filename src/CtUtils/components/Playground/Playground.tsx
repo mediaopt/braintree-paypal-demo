@@ -3,7 +3,7 @@ import { close } from "@commercetools/checkout-browser-sdk";
 import { Button } from "../Button.tsx";
 
 function isStandardMode(
-  m: BraintreeCheckoutMode,
+  m: CheckoutMode,
 ): m is "fullCheckout" | "paymentOnly" {
   return m === "fullCheckout" || m === "paymentOnly";
 }
@@ -12,13 +12,13 @@ import { getShippingMethods } from "../../services/shipping";
 import { ProductsGroup } from "./ProductsGroup";
 import { CartLevelSettings } from "./CartSettings/CartLevelSettings";
 import { CartSummary } from "./CartSummary";
-import type { BraintreeCheckoutMode } from "../../../types.ts";
+import type { CheckoutMode } from "../../../types.ts";
 import { loadStandardCheckout } from "../../../CheckoutLoader/loadStandardCheckout.ts";
 import { CartProvider, useCart } from "../../context/CartContext.tsx";
 // import { LoadVaultWithoutPurchase } from "../../../CheckoutLoader/LoadVault.tsx";
 
 interface CartWrapperProps {
-  mode: BraintreeCheckoutMode;
+  mode: CheckoutMode;
   applicationKey: string;
 }
 

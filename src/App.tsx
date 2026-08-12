@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Playground } from "./CtUtils/components/Playground/Playground";
 import { labelMap, CHECKOUT_APPLICATIONS } from "./constants.ts";
-import type { BraintreeCheckoutMode } from "./types.ts";
+import type { CheckoutMode } from "./types.ts";
 
 function App() {
-  const [flow, setFlow] = useState<BraintreeCheckoutMode>("paymentOnly");
+  const [flow, setFlow] = useState<CheckoutMode>("paymentOnly");
 
   return (
     <div className="p-4 sm:p-8">
       <div className="flex justify-between">
-        {(Object.keys(labelMap) as BraintreeCheckoutMode[]).map((label) => (
+        {(Object.keys(labelMap) as CheckoutMode[]).map((label) => (
           <label key={label} className="cursor-pointer">
             <input
               type="radio"
