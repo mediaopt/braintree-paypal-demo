@@ -81,46 +81,40 @@ const DEMO_COUNTRY_OPTIONS: CountryOption[] = [
   { value: "PL", label: "Poland" },
 ];
 
-// These values reference commercetools entities (customer/discount codes/products) that only
-// exist in one connector's project, not the other — everything else in this file is shared.
+// These values reference commercetools entities (customer/products) that only
+// exist in one connector's project, not the other — everything else here is shared.
+const SHARED_DISCOUNT_CODES: DiscountCodeEntry[] = [
+  {
+    code: "demo-cart-discount", // this is the hardcoded value that must be replaced with actual code from your shop for your own demo
+    name: "10% off", // this is just a display name, you can change it to whatever you like
+  },
+];
+
+const SHARED_COUNTRY_OPTIONS: CountryCode[] = ["DE", "US", "NL", "PL"];
+
 const CONNECTOR_CONFIG: Record<ConnectorKey, ConnectorConfig> = {
   braintree: {
     defaultCustomerId: "2d83f470-fb59-4f9e-ab71-dd27b30ef266",
-    discountCodes: [
-      {
-        code: "demo-cart-discount", //this is the hardcoded value that must be replaced with actual code from your shop for your own demo
-        name: "10% off", //this is just a display name, you can change it to whatever you like
-      },
-    ],
+    discountCodes: SHARED_DISCOUNT_CODES,
     products: [
-      {
-        id: "c663228f-b7e9-4000-813d-af8513fde4c4",
-        description: "Standard",
-      },
+      { id: "c663228f-b7e9-4000-813d-af8513fde4c4", description: "Standard" },
       { id: "2117bafa-7b7b-4200-bc0f-cf8b4fea88d4", description: "Get 1 free" },
-      {
-        id: "827bdeed-fbb2-4000-b688-50fb3aabda12",
-        description: "-0.10 (this item)",
-      },
-      {
-        id: "9b29008d-504b-4700-b620-31101064c89c",
-        description: "-3% (cart)",
-      },
+      { id: "827bdeed-fbb2-4000-b688-50fb3aabda12", description: "-0.10 (this item)" },
+      { id: "9b29008d-504b-4700-b620-31101064c89c", description: "-3% (cart)" },
     ],
-    countryOptions: ["DE", "US", "NL", "PL"],
+    countryOptions: SHARED_COUNTRY_OPTIONS,
   },
   paypal: {
-    // TODO: fill in once the PayPal sandbox commercetools project exists
-    defaultCustomerId: "",
-    discountCodes: [],
+    defaultCustomerId: "784807d6-40d7-48c1-ac78-132167acc019",
+    discountCodes: SHARED_DISCOUNT_CODES,
     products: [
-      { id: "d5fb4d90-8bb3-4200-80a5-4772b4729b30", description: "standard" },
-      {
-        id: "46cdc8db-3de8-4200-85bc-401c451a1545",
-        description: "-73% (this item)",
-      },
+      { id: "ee1b0e82-b697-4b7b-bef9-63d3b8b92878", description: "Standard" },
+      { id: "3d36c3b7-2490-424a-8a53-48b7c62d02d3", description: "Get 1 free" },
+      { id: "13fae9f4-d4a3-4208-a192-88a12c6ed76f", description: "-0.10 (this item)" },
+      { id: "b013d2de-9e51-4b9c-b0c5-253e1191ba21", description: "-3% (cart)" },
+      { id: "1e3cb950-b934-4739-aa07-ed30da6b9586", description: "External Tax" },
     ],
-    countryOptions: ["DE", "US", "NL", "PL"], // braintree and paypal currently support the same countries
+    countryOptions: SHARED_COUNTRY_OPTIONS,
   },
 };
 
