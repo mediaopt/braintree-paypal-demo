@@ -15,11 +15,15 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  build:
+    strategy:
+      matrix:
+        include:
+          - connector: braintree
+            secretPrefix: BRAINTREE
+          - connector: paypal
+            secretPrefix: PAYPAL
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,22 +31,63 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm ci
-      - name: Build Storybook
+      - name: Compute base path
+        # Project Pages serve from /<repo>/<connector>/, not /<connector>/ — the base path must
+        # include the repository name segment or Storybook's asset URLs resolve one level too high.
+        id: basepath
+        run: echo "path=/${GITHUB_REPOSITORY#*/}/${{ matrix.connector }}/" >> "$GITHUB_OUTPUT"
+      - name: Build Storybook (${{ matrix.connector }})
         # VITE_CTP_CLIENT_SECRET is compiled into the published bundle (Vite inlines VITE_-prefixed
         # vars at build time) and this build is deployed to a public GitHub Pages URL, so these
         # secrets must belong to a disposable/sandboxed commercetools project, never production.
+        # Each connector reads its own secret set via a per-connector prefix (see README).
         run: npm run build-storybook
         env:
-          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
-          VITE_CTP_PROJECT_KEY: ${{ secrets.VITE_CTP_PROJECT_KEY }}
-          VITE_CTP_REGION: ${{ secrets.VITE_CTP_REGION }}
-          VITE_CTP_APPLICATION_KEY: ${{ secrets.VITE_CTP_APPLICATION_KEY }}
-          VITE_CTP_FULL_APPLICATION_KEY: ${{ secrets.VITE_CTP_FULL_APPLICATION_KEY }}
-          VITE_CTP_CLIENT_ID: ${{ secrets.VITE_CTP_CLIENT_ID }}
-          VITE_CTP_CLIENT_SECRET: ${{ secrets.VITE_CTP_CLIENT_SECRET }}
-          VITE_CTP_SCOPE: ${{ secrets.VITE_CTP_SCOPE }}
+          VITE_BASE_PATH: ${{ steps.basepath.outputs.path }}
+          VITE_CTP_PROJECT_KEY: ${{ secrets[format('{0}_VITE_CTP_PROJECT_KEY', matrix.secretPrefix)] }}
+          VITE_CTP_REGION: ${{ secrets[format('{0}_VITE_CTP_REGION', matrix.secretPrefix)] }}
+          VITE_CTP_APPLICATION_KEY: ${{ secrets[format('{0}_VITE_CTP_APPLICATION_KEY', matrix.secretPrefix)] }}
+          VITE_CTP_FULL_APPLICATION_KEY: ${{ secrets[format('{0}_VITE_CTP_FULL_APPLICATION_KEY', matrix.secretPrefix)] }}
+          VITE_CTP_CLIENT_ID: ${{ secrets[format('{0}_VITE_CTP_CLIENT_ID', matrix.secretPrefix)] }}
+          VITE_CTP_CLIENT_SECRET: ${{ secrets[format('{0}_VITE_CTP_CLIENT_SECRET', matrix.secretPrefix)] }}
+          VITE_CTP_SCOPE: ${{ secrets[format('{0}_VITE_CTP_SCOPE', matrix.secretPrefix)] }}
+      - name: Point the return page back to this connector's Storybook
+        run: sed -i "s|__BACK_TO_STORYBOOK__|${{ steps.basepath.outputs.path }}|" storybook-static/return/index.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: storybook-${{ matrix.connector }}
+          path: storybook-static
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Assemble combined site
+        run: |
+          mkdir -p _site
+          mv artifacts/storybook-braintree _site/braintree
+          mv artifacts/storybook-paypal _site/paypal
+          cat > _site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head><meta charset="UTF-8"><title>commercetools Checkout Connector Demo</title></head>
+          <body>
+            <h1>commercetools Checkout Connector Demo</h1>
+            <ul>
+              <li><a href="./braintree/">Braintree demo</a></li>
+              <li><a href="./paypal/">PayPal demo</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: storybook-static
+          path: _site
       - uses: actions/deploy-pages@v4
         id: deployment

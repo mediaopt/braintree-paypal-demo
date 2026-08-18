@@ -28,15 +28,21 @@ export function RadioSetting<T extends string>({
 
   const handleChange = (next: T) => {
     setValue(next);
+
     onCartUpdate(toPatch(next));
   };
 
   return (
     <fieldset>
-      <legend className="font-medium text-sm mb-1">{legendFromName(name)}</legend>
+      <legend className="font-medium text-sm mb-1">
+        {legendFromName(name)}
+      </legend>
       <div className="flex flex-col gap-1">
         {options.map((option) => (
-          <label key={option.value} className="flex items-center gap-2 text-sm cursor-pointer">
+          <label
+            key={option.value}
+            className="flex items-center gap-2 text-sm cursor-pointer"
+          >
             <input
               type="radio"
               name={name}

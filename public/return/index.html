@@ -1,23 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Return</title>
-    <script>
-      if (window.self !== window.top) {
-        window.top.location.href = window.self.location.href;
-      }
-    </script>
-  </head>
-  <body>
-    <div>Payment processed. Commercetools checkout redirected you to:</div>
-    <p id="url"></p>
-    <p>
-      It is your responsibility to build the actual result page for your shop.
-    </p>
-    <p><a href="../" target="_top">← Back to Storybook</a></p>
-    <script>
-      document.getElementById("url").textContent = window.location.href;
-    </script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Return</title>
+  <script>
+    if (window.self !== window.top) {
+      window.top.location.href = window.self.location.href;
+    }
+  </script>
+</head>
+<body>
+  <div>
+    Payment processed. It is your responsibility to build a result or
+    confirmation (for authorize flow) page. commercetools Checkout redirected you to:
+  </div>
+  <p><a id="return-url" href="#"></a></p>
+  <p><a id="back-link" href="__BACK_TO_STORYBOOK__" target="_top">&larr; Back to Storybook</a></p>
+  <script>
+    var returnUrlLink = document.getElementById("return-url");
+    returnUrlLink.href = window.location.href;
+    returnUrlLink.textContent = window.location.href;
+
+    // Falls back to the parent directory (this page's own Storybook root) when the
+    // __BACK_TO_STORYBOOK__ placeholder wasn't substituted at build time — e.g. the file
+    // is opened directly, or served locally via Storybook's staticDirs copy.
+    var backLink = document.getElementById("back-link");
+    if (backLink.getAttribute("href").indexOf("__BACK_TO_STORYBOOK__") !== -1) {
+      backLink.href = "../";
+    }
+  </script>
+</body>
 </html>
