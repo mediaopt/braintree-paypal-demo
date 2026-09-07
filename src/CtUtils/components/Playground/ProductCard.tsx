@@ -11,6 +11,7 @@ import { loadExpress } from "../../../CheckoutLoader/loadExpress.ts";
 import { useCart } from "../../context/CartContext.tsx";
 import { cartDraftFromLocal } from "../../../helpers.ts";
 import { createCart } from "../../services/cart.ts";
+import { EXPRESS_PAYPAL_ID } from "../../../constants";
 
 interface ProductCardProps {
   productId: string;
@@ -112,7 +113,7 @@ export const ProductCard = ({
       </div>
 
       {isExpress ? (
-        <div data-ctc-express="PayPal" className="w-full">
+        <div data-ctc-express={EXPRESS_PAYPAL_ID} className="w-full">
           <Button
             className="w-full"
             action={async () => {
