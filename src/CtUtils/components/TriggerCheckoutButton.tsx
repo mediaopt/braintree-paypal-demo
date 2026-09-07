@@ -5,7 +5,11 @@ import type {
   TaxCalculationMode,
 } from "@commercetools/platform-sdk";
 import { createCart } from "../services/cart";
-import { DEFAULT_CUSTOMER_ID, DISCOUNT_CODES } from "../../constants";
+import {
+  DEFAULT_CUSTOMER_ID,
+  DISCOUNT_CODES,
+  EXPRESS_PAYPAL_ID,
+} from "../../constants";
 import { getConnectorLabel } from "../../connector";
 import { Button } from "./Button.tsx";
 import type { CheckoutMode, CartStateData, CountryCode } from "../../types.ts";
@@ -127,7 +131,7 @@ export const TriggerCheckoutButton = ({
         // mode === "pureVault" ? (
         //   <LoadVaultWithoutPurchase cartId={mountedCartId} cartDraft={cartDraftFromLocal(buildLocalDraft())} />
         // ) :
-        <div data-ctc-express="PayPal"></div>
+        <div data-ctc-express={EXPRESS_PAYPAL_ID}></div>
       ) : (
         <Button
           action={handleClick}

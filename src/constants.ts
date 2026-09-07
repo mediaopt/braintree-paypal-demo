@@ -8,6 +8,9 @@ import { getConnectorKey, type ConnectorKey } from "./connector.ts";
 
 export const CART_CURRENCY = "EUR";
 
+// Hardcoded to match commercetools naming convention for the express payment method type/selector.
+export const EXPRESS_PAYPAL_ID = "paypal";
+
 interface DiscountCodeEntry {
   code: string;
   name: string;
