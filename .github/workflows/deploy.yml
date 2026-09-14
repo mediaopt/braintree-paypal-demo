@@ -32,10 +32,11 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Compute base path
-        # Project Pages serve from /<repo>/<connector>/, not /<connector>/ — the base path must
-        # include the repository name segment or Storybook's asset URLs resolve one level too high.
+        # Served from the custom domain root (braintree-paypal-demo.mediao.pt), so pages live at
+        # /<connector>/ — do not prefix with the repository name (that was only correct for the
+        # old mediaopt.github.io/<repo>/<connector>/ project-site URL).
         id: basepath
-        run: echo "path=/${GITHUB_REPOSITORY#*/}/${{ matrix.connector }}/" >> "$GITHUB_OUTPUT"
+        run: echo "path=/${{ matrix.connector }}/" >> "$GITHUB_OUTPUT"
       - name: Build Storybook (${{ matrix.connector }})
         # VITE_CTP_CLIENT_SECRET is compiled into the published bundle (Vite inlines VITE_-prefixed
         # vars at build time) and this build is deployed to a public GitHub Pages URL, so these
