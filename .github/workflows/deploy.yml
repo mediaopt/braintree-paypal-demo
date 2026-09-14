@@ -66,6 +66,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -74,6 +75,8 @@ jobs:
           mkdir -p _site
           mv artifacts/storybook-braintree _site/braintree
           mv artifacts/storybook-paypal _site/paypal
+          mkdir -p _site/.well-known
+          cp .well-known/apple-developer-merchantid-domain-association _site/.well-known/
           cat > _site/index.html <<'EOF'
           <!DOCTYPE html>
           <html lang="en">
