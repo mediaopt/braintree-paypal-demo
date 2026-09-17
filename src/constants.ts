@@ -104,6 +104,7 @@ const CONNECTOR_CONFIG: Record<ConnectorKey, ConnectorConfig> = {
       { id: "2117bafa-7b7b-4200-bc0f-cf8b4fea88d4", description: "Get 1 free" },
       { id: "827bdeed-fbb2-4000-b688-50fb3aabda12", description: "-0.10 (this item)" },
       { id: "9b29008d-504b-4700-b620-31101064c89c", description: "-3% (cart)" },
+      { id: "1da5a570-03bc-4200-82a3-e983d668b821", description: "External Tax" },
     ],
     countryOptions: SHARED_COUNTRY_OPTIONS,
   },
