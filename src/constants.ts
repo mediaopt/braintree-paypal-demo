@@ -6,7 +6,7 @@ import type {
 } from "./types.ts";
 import { getConnectorKey, type ConnectorKey } from "./connector.ts";
 
-export const CART_CURRENCY = "EUR";
+export const CART_CURRENCY = "USD";
 
 // Hardcoded to match commercetools naming convention for the express payment method type/selector.
 export const EXPRESS_PAYPAL_ID = "paypal";
@@ -78,8 +78,8 @@ export const ADDRESSES: Record<CountryCode, Address> = {
 // Master list of all countries this demo knows how to display — each connector's countryOptions
 // below is just the subset of CountryCode values it has access to.
 const DEMO_COUNTRY_OPTIONS: CountryOption[] = [
-  { value: "DE", label: "Germany" },
   { value: "US", label: "USA" },
+  { value: "DE", label: "Germany" },
   { value: "NL", label: "Netherlands" },
   { value: "PL", label: "Poland" },
 ];
@@ -93,7 +93,7 @@ const SHARED_DISCOUNT_CODES: DiscountCodeEntry[] = [
   },
 ];
 
-const SHARED_COUNTRY_OPTIONS: CountryCode[] = ["DE", "US", "NL", "PL"];
+const SHARED_COUNTRY_OPTIONS: CountryCode[] = ["US", "DE", "NL", "PL"];
 
 const CONNECTOR_CONFIG: Record<ConnectorKey, ConnectorConfig> = {
   braintree: {
