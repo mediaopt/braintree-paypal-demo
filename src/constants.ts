@@ -91,6 +91,10 @@ const SHARED_DISCOUNT_CODES: DiscountCodeEntry[] = [
     code: "demo-cart-discount", // this is the hardcoded value that must be replaced with actual code from your shop for your own demo
     name: "10% off", // this is just a display name, you can change it to whatever you like
   },
+  {
+    code: "demo-2-percent-discount",
+    name: "2% off"
+  },
 ];
 
 const SHARED_COUNTRY_OPTIONS: CountryCode[] = ["US", "DE", "NL", "PL"];
