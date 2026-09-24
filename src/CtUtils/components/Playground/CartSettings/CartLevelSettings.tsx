@@ -27,7 +27,7 @@ export const CartLevelSettings: FC<CartLevelSettingsProps> = ({
   allowSubmit,
 }) => {
   const [creationSettings, setCreationSettings] = useState<CartStateData>({});
-  const [selectedCountry, setSelectedCountry] = useState("DE");
+  const [selectedCountry, setSelectedCountry] = useState("US");
 
   const handleCreationUpdate: OnLocalCartUpdate = (partial) => {
     if (partial.billingAddress?.country) {
