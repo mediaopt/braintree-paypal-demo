@@ -95,6 +95,10 @@ const SHARED_DISCOUNT_CODES: DiscountCodeEntry[] = [
     code: "demo-2-percent-discount",
     name: "2% off"
   },
+  {
+    code: "2-cents-off",
+    name: "2 Cents off"
+  }
 ];
 
 const SHARED_COUNTRY_OPTIONS: CountryCode[] = ["US", "DE", "NL", "PL"];
