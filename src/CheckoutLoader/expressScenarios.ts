@@ -23,7 +23,7 @@ const randomOtherProductId = (productId: string) => {
   return others[Math.floor(Math.random() * others.length)].id;
 };
 
-// The product in the cart the session holds at expressPayment.init (zeroCart: none, noCart: no cart)
+// The product in the cart the session holds at expressPayment.init (zeroCart: none, noCart/unboundCart: no cart)
 const initProductId = (scenario: ExpressScenario, productId: string) =>
   scenario === "validCart"
     ? productId
@@ -39,7 +39,7 @@ export const loadExpressScenario = async ({
 }: ExpressScenarioProps) => {
   const initProduct = initProductId(scenario, productId);
   const initCart =
-    scenario === "noCart"
+    scenario === "noCart" || scenario === "unboundCart"
       ? undefined
       : await createCartOrThrow({
           ...cartDraft,
@@ -58,10 +58,13 @@ export const loadExpressScenario = async ({
           ...cartDraft,
           lineItems: [{ productId, quantity: 1 }],
         });
-        // There is no public commercetools call to update the session, please ask commercetools for
-        // the official way if you need it
-        await updateSessionCart(sessionId, cart.id);
-        console.log(`[express:${scenario}] session ${sessionId} now holds cart created on click: ${cart.id}`);
+        // Linking the cart to the session has no public documentation available but is confirmed by
+        // commercetools upon request
+        // unboundCart skips it on purpose: express-transactions then fails with no cart in session
+        if (scenario !== "unboundCart") await updateSessionCart(sessionId, cart.id);
+        console.log(
+          `[express:${scenario}] session ${sessionId} ${scenario === "unboundCart" ? "NOT bound to" : "now holds"} cart created on click: ${cart.id}`,
+        );
       },
     }),
   });

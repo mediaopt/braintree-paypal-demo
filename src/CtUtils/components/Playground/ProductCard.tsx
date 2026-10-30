@@ -122,7 +122,7 @@ export const ProductCard = ({
               loadExpressScenario({
                 scenario: expressScenario,
                 productId,
-                cartDraft: cartDraftFromLocal(localCartData),
+                cartDraft: cartDraftFromLocal(localCartData, "express"),
                 applicationKey,
               })
             }

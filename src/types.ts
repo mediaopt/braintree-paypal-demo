@@ -7,7 +7,7 @@ export type CheckoutMode = "fullCheckout" | "paymentOnly" | "express";
 // | "pureVault";
 
 // What the session holds at expressPayment.init, and so what onPayButtonClick must do
-export type ExpressScenario = "validCart" | "replacedCart" | "zeroCart" | "noCart";
+export type ExpressScenario = "validCart" | "replacedCart" | "zeroCart" | "noCart" | "unboundCart";
 
 export type CountryCode = "DE" | "US" | "NL" | "PL";
 

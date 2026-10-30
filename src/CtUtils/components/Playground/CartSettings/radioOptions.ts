@@ -8,6 +8,7 @@ export const RADIO_OPTIONS = {
     { value: "replacedCart", label: "New cart created when previous 0 price already existed" },
     { value: "zeroCart", label: "0 price cart, new cart on click" },
     { value: "noCart", label: "No cart, new cart on click" },
+    { value: "unboundCart", label: "Merchant integration error behaviour: cart not linked to session" },
   ] as RadioOption<ExpressScenario>[],
   customer: [
     { value: "none", label: "Guest" },

@@ -36,7 +36,10 @@ export const Playground = ({ mode, applicationKey }: CartWrapperProps) => {
   return (
     <CartProvider
       mode={mode}
-      skipCart={mode === "express" && expressScenario === "noCart"}
+      skipCart={
+        mode === "express" &&
+        (expressScenario === "noCart" || expressScenario === "unboundCart")
+      }
     >
       <PlaygroundContent
         mode={mode}
