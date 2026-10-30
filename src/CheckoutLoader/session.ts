@@ -65,7 +65,8 @@ export const getSessionId = async (cartId: string | undefined, applicationKey: s
   return data.id as string;
 };
 
-// Not in the public docs (only create is): sessions have no version, and setCart takes cartRef directly
+// Linking a cart to a session has no public documentation available but is confirmed by commercetools
+// upon request: sessions have no version, and setCart takes cartRef directly
 export const updateSessionCart = async (sessionId: string, cartId: string): Promise<void> => {
   const oAuthToken = await fetchCoCoOAuthToken();
 
