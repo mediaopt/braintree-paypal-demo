@@ -7,29 +7,31 @@ export interface RadioOption<T extends string = string> {
   label: ReactNode;
 }
 
-interface RadioSettingProps<T extends string> {
+// Cart settings patch the local cart; non-cart settings (e.g. the express scenario) use onChange
+type RadioSettingProps<T extends string> = {
   name: string;
   options: RadioOption<T>[];
-  onCartUpdate: OnLocalCartUpdate;
-  toPatch: (value: T) => Partial<CartStateData>;
-}
+} & (
+  | {
+      onCartUpdate: OnLocalCartUpdate;
+      toPatch: (value: T) => Partial<CartStateData>;
+    }
+  | { onChange: (value: T) => void }
+);
 
 function legendFromName(name: string): string {
   return name.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
 }
 
-export function RadioSetting<T extends string>({
-  name,
-  options,
-  onCartUpdate,
-  toPatch,
-}: RadioSettingProps<T>) {
+export function RadioSetting<T extends string>(props: RadioSettingProps<T>) {
+  const { name, options } = props;
   const [value, setValue] = useState<T>(options[0].value);
 
   const handleChange = (next: T) => {
     setValue(next);
 
-    onCartUpdate(toPatch(next));
+    if ("onChange" in props) props.onChange(next);
+    else props.onCartUpdate(props.toPatch(next));
   };
 
   return (

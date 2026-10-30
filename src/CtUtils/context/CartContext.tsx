@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import type { Cart } from "@commercetools/platform-sdk";
-import { createCart, updateCart as updateCartApi } from "../services/cart.ts";
+import { createCart, deleteCart, updateCart as updateCartApi } from "../services/cart.ts";
 import type { CheckoutMode, CartStateData, OnLocalCartUpdate } from "../../types.ts";
 import { handleCartActions } from "../components/Playground/handleCartActions.ts";
 import { cartDraftFromLocal } from "../../helpers.ts";
@@ -25,13 +25,15 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
-export const CartProvider: FC<PropsWithChildren<{ mode: CheckoutMode }>> = ({ children, mode }) => {
+export const CartProvider: FC<
+  PropsWithChildren<{ mode: CheckoutMode; skipCart?: boolean }>
+> = ({ children, mode, skipCart }) => {
   const [cart, setCart] = useState<Cart | undefined>(undefined);
   const [localCartData, setLocalCartData] = useState<CartStateData>({});
   const [cartError, setCartError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (cart) return;
+    if (cart || skipCart) return;
     // It is your responsibility to create a valid implementation.
     // This implementation creates a cart with a demo customer for pureVault mode.
     const draft =
@@ -41,7 +43,13 @@ export const CartProvider: FC<PropsWithChildren<{ mode: CheckoutMode }>> = ({ ch
     createCart(draft).then(({ body }) => {
       if (body) setCart(body);
     });
-  }, [cart, mode]);
+  }, [cart, mode, skipCart]);
+
+  // skipCart (express "No cart"): no cart may exist, so delete the one created on mount
+  useEffect(() => {
+    if (!skipCart || !cart) return;
+    deleteCart(cart.id, cart.version).then(() => setCart(undefined));
+  }, [skipCart, cart]);
 
   useEffect(() => {
     setLocalCartData({});

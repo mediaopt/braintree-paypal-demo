@@ -13,7 +13,7 @@ export type PaymentTemplateData = Pick<
 >;
 
 export const buildPaymentTemplateData = async (
-  cartId: string,
+  cartId: string | undefined,
   applicationKey: string,
 ): Promise<PaymentTemplateData> => {
   const sessionId = await getSessionId(cartId, applicationKey);
@@ -33,7 +33,9 @@ export const buildPaymentTemplateData = async (
   };
 };
 
-export const getSessionId = async (cartId: string, applicationKey: string): Promise<string> => {
+// Without a cartId the session starts cart-less — allowed for express, whose onPayButtonClick then
+// creates the cart
+export const getSessionId = async (cartId: string | undefined, applicationKey: string): Promise<string> => {
   const oAuthToken = await fetchCoCoOAuthToken();
 
   const res = await fetch(
@@ -45,7 +47,7 @@ export const getSessionId = async (cartId: string, applicationKey: string): Prom
         Authorization: `Bearer ${oAuthToken}`,
       },
       body: JSON.stringify({
-        cart: { cartRef: { id: cartId } },
+        ...(cartId && { cart: { cartRef: { id: cartId } } }),
         metadata: {
           applicationKey: applicationKey,
         },
@@ -61,4 +63,28 @@ export const getSessionId = async (cartId: string, applicationKey: string): Prom
   }
 
   return data.id as string;
+};
+
+// Not in the public docs (only create is): sessions have no version, and setCart takes cartRef directly
+export const updateSessionCart = async (sessionId: string, cartId: string): Promise<void> => {
+  const oAuthToken = await fetchCoCoOAuthToken();
+
+  const res = await fetch(
+    `https://session.${import.meta.env.VITE_CTP_REGION}.commercetools.com/${import.meta.env.VITE_CTP_PROJECT_KEY}/sessions/${sessionId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${oAuthToken}`,
+      },
+      body: JSON.stringify({
+        actions: [{ action: "setCart", cartRef: { id: cartId } }],
+      }),
+    },
+  );
+
+  if (!res.ok) {
+    console.error("Not able to update session:", await res.json());
+    throw new Error("Not able to update session");
+  }
 };

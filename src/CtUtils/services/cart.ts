@@ -12,6 +12,13 @@ export const createCart = (cartDraft: CartDraft): Promise<ClientResponse<Cart>> 
     .post({ body: { ...cartDraft } })
     .execute();
 
+export const deleteCart = (cartId: string, cartVersion: number): Promise<ClientResponse<Cart>> =>
+  apiRoot
+    .carts()
+    .withId({ ID: cartId })
+    .delete({ queryArgs: { version: cartVersion } })
+    .execute();
+
 export const getCart = (cartId: string): Promise<ClientResponse<Cart>> =>
   apiRoot.carts().withId({ ID: cartId }).get().execute();
 
