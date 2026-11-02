@@ -2,13 +2,15 @@ import { useState } from "react";
 import { ProductCard } from "./ProductCard";
 import { GroupWrapper } from "./CartSettings/GroupWrapper.tsx";
 import { PRODUCTS } from "../../../constants.ts";
+import type { ExpressScenario } from "../../../types.ts";
 
 interface ProductsGroupProps {
   isExpress?: boolean;
+  expressScenario?: ExpressScenario;
   applicationKey: string;
 }
 
-export const ProductsGroup = ({ isExpress, applicationKey }: ProductsGroupProps) => {
+export const ProductsGroup = ({ isExpress, expressScenario, applicationKey }: ProductsGroupProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (isExpress) {
@@ -17,7 +19,13 @@ export const ProductsGroup = ({ isExpress, applicationKey }: ProductsGroupProps)
       <GroupWrapper title="Choose product to buy now">
         <div className="grid grid-cols-[1fr_auto] gap-4 p-4">
           <div className="flex justify-center">
-            <ProductCard productId={activeId} isExpress isSelected applicationKey={applicationKey} />
+            <ProductCard
+              productId={activeId}
+              isExpress
+              expressScenario={expressScenario}
+              isSelected
+              applicationKey={applicationKey}
+            />
           </div>
           <div className="flex flex-col justify-between h-full">
             {PRODUCTS.filter((_, i) => i !== activeIndex).map(({ id }) => (
@@ -25,6 +33,7 @@ export const ProductsGroup = ({ isExpress, applicationKey }: ProductsGroupProps)
                 key={id}
                 productId={id}
                 isExpress
+                expressScenario={expressScenario}
                 isSelected={false}
                 onSelect={() =>
                   setActiveIndex(PRODUCTS.findIndex((p) => p.id === id))

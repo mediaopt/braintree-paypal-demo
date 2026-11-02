@@ -4,20 +4,23 @@ import { mountExpressMethods } from "./mountExpressMethods.ts";
 import { CART_COUNTRY, CART_CURRENCY } from "../constants.ts";
 
 interface ExpressCheckoutProps {
-  cartId: string;
+  cartId?: string;
   cartDraft: CartDraft;
   applicationKey: string;
+  onPayButtonClick?: (sessionId: string) => Promise<void>;
 }
 
 export const loadExpress = async ({
   cartId,
   cartDraft,
   applicationKey,
+  onPayButtonClick,
 }: ExpressCheckoutProps) => {
   const paymentData = await buildPaymentTemplateData(cartId, applicationKey);
   mountExpressMethods(paymentData, {
     countryCode: cartDraft.country ?? CART_COUNTRY,
     currencyCode: cartDraft.currency ?? CART_CURRENCY,
-    onPayButtonClick: async () => {}, //the prerequisite for PayPal Express button is a vaild payment, so the cart for the Braintree connector must be created in advance
+    // Checkout awaits this before creating the express transaction on the session passed to init
+    onPayButtonClick: async () => onPayButtonClick?.(paymentData.sessionId),
   }).catch(console.log);
 };

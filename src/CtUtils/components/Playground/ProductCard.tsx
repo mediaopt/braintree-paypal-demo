@@ -7,15 +7,16 @@ import {
 } from "../../services/products";
 import { formatPrice } from "../../services/format";
 import { Button } from "../Button.tsx";
-import { loadExpress } from "../../../CheckoutLoader/loadExpress.ts";
+import { loadExpressScenario } from "../../../CheckoutLoader/expressScenarios.ts";
 import { useCart } from "../../context/CartContext.tsx";
 import { cartDraftFromLocal } from "../../../helpers.ts";
-import { createCart } from "../../services/cart.ts";
 import { EXPRESS_PAYPAL_ID } from "../../../constants";
+import type { ExpressScenario } from "../../../types.ts";
 
 interface ProductCardProps {
   productId: string;
   isExpress?: boolean;
+  expressScenario?: ExpressScenario;
   isSelected?: boolean;
   onSelect?: () => void;
   applicationKey: string;
@@ -24,6 +25,7 @@ interface ProductCardProps {
 export const ProductCard = ({
   productId,
   isExpress,
+  expressScenario = "validCart",
   isSelected,
   onSelect,
   applicationKey,
@@ -116,22 +118,14 @@ export const ProductCard = ({
         <div data-ctc-express={EXPRESS_PAYPAL_ID} className="w-full">
           <Button
             className="w-full"
-            action={async () => {
-              const newCart = (
-                await createCart({
-                  ...cartDraftFromLocal(localCartData),
-                  lineItems: [{ productId, quantity: 1 }],
-                })
-              ).body;
-              if (!newCart) throw new Error("Could not create cart");
-              else {
-                loadExpress({
-                  cartId: newCart?.id,
-                  cartDraft: cartDraftFromLocal(localCartData),
-                  applicationKey,
-                });
-              }
-            }}
+            action={() =>
+              loadExpressScenario({
+                scenario: expressScenario,
+                productId,
+                cartDraft: cartDraftFromLocal(localCartData, "express"),
+                applicationKey,
+              })
+            }
             title="Buy now"
           />
         </div>

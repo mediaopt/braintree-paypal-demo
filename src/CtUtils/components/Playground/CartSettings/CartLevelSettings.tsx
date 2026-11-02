@@ -63,13 +63,17 @@ export const CartLevelSettings: FC<CartLevelSettingsProps> = ({
   return (
     <GroupWrapper title="Cart Level Settings">
       <div className="grid grid-cols-[auto_auto] gap-x-8 gap-y-4 items-start">
-        {/* Row 1: titles */}
-        <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-          Set at cart creation
-        </h3>
-        <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-          Modify existing cart
-        </h3>
+        {/* Row 1: titles — they name the buttons' actions, so express (no buttons) drops them */}
+        {hasButtons && (
+          <>
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              Set at cart creation
+            </h3>
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              Modify existing cart
+            </h3>
+          </>
+        )}
 
         {/* Row 2: settings */}
         <div className="flex gap-4 flex-wrap">

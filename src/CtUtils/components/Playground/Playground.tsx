@@ -12,7 +12,9 @@ import { getShippingMethods } from "../../services/shipping";
 import { ProductsGroup } from "./ProductsGroup";
 import { CartLevelSettings } from "./CartSettings/CartLevelSettings";
 import { CartSummary } from "./CartSummary";
-import type { CheckoutMode } from "../../../types.ts";
+import { RadioSetting } from "./CartSettings/RadioSetting.tsx";
+import { RADIO_OPTIONS } from "./CartSettings/radioOptions.ts";
+import type { CheckoutMode, ExpressScenario } from "../../../types.ts";
 import { loadStandardCheckout } from "../../../CheckoutLoader/loadStandardCheckout.ts";
 import { CartProvider, useCart } from "../../context/CartContext.tsx";
 // import { LoadVaultWithoutPurchase } from "../../../CheckoutLoader/LoadVault.tsx";
@@ -22,13 +24,39 @@ interface CartWrapperProps {
   applicationKey: string;
 }
 
-export const Playground = ({ mode, applicationKey }: CartWrapperProps) => (
-  <CartProvider mode={mode}>
-    <PlaygroundContent mode={mode} applicationKey={applicationKey} />
-  </CartProvider>
-);
+interface PlaygroundContentProps extends CartWrapperProps {
+  expressScenario: ExpressScenario;
+  onExpressScenarioChange: (scenario: ExpressScenario) => void;
+}
 
-const PlaygroundContent = ({ mode, applicationKey }: CartWrapperProps) => {
+export const Playground = ({ mode, applicationKey }: CartWrapperProps) => {
+  const [expressScenario, setExpressScenario] = useState<ExpressScenario>(
+    RADIO_OPTIONS.expressScenario[0].value,
+  );
+  return (
+    <CartProvider
+      mode={mode}
+      skipCart={
+        mode === "express" &&
+        (expressScenario === "noCart" || expressScenario === "unboundCart")
+      }
+    >
+      <PlaygroundContent
+        mode={mode}
+        applicationKey={applicationKey}
+        expressScenario={expressScenario}
+        onExpressScenarioChange={setExpressScenario}
+      />
+    </CartProvider>
+  );
+};
+
+const PlaygroundContent = ({
+  mode,
+  applicationKey,
+  expressScenario,
+  onExpressScenarioChange,
+}: PlaygroundContentProps) => {
   const {
     cart: serverCart,
     setCart: setServerCart,
@@ -70,6 +98,13 @@ const PlaygroundContent = ({ mode, applicationKey }: CartWrapperProps) => {
   return (
     <div className="p-4 sm:p-8">
       <div className="flex flex-col gap-8 max-w-fit mx-auto self-center">
+        {mode === "express" && (
+          <RadioSetting
+            name="expressScenario"
+            options={RADIO_OPTIONS.expressScenario}
+            onChange={onExpressScenarioChange}
+          />
+        )}
         <CartLevelSettings
           key={serverCart?.id}
           cartId={serverCart?.id}
@@ -79,7 +114,15 @@ const PlaygroundContent = ({ mode, applicationKey }: CartWrapperProps) => {
           availableShippingMethods={availableShippingMethods}
           allowSubmit={localStateChanged}
         />
-        {mode === "express" ? <ProductsGroup isExpress applicationKey={applicationKey} /> : <ProductsGroup applicationKey={applicationKey} />}
+        {mode === "express" ? (
+          <ProductsGroup
+            isExpress
+            expressScenario={expressScenario}
+            applicationKey={applicationKey}
+          />
+        ) : (
+          <ProductsGroup applicationKey={applicationKey} />
+        )}
         {serverCart && (mode === "fullCheckout" || mode === "paymentOnly") && (
           <CartSummary
             cart={serverCart}
