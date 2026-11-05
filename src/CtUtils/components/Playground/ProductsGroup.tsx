@@ -3,6 +3,7 @@ import { ProductCard } from "./ProductCard";
 import { GroupWrapper } from "./CartSettings/GroupWrapper.tsx";
 import { PRODUCTS } from "../../../constants.ts";
 import type { ExpressScenario } from "../../../types.ts";
+import { useCart } from "../../context/CartContext.tsx";
 
 interface ProductsGroupProps {
   isExpress?: boolean;
@@ -12,6 +13,7 @@ interface ProductsGroupProps {
 
 export const ProductsGroup = ({ isExpress, expressScenario, applicationKey }: ProductsGroupProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { localCartData } = useCart();
 
   if (isExpress) {
     const activeId = PRODUCTS[activeIndex].id;
@@ -19,7 +21,9 @@ export const ProductsGroup = ({ isExpress, expressScenario, applicationKey }: Pr
       <GroupWrapper title="Choose product to buy now">
         <div className="grid grid-cols-[1fr_auto] gap-4 p-4">
           <div className="flex justify-center">
+            {/* The SDK has no express unmount, so remounting is what drops a PayPal button mounted for stale data */}
             <ProductCard
+              key={`${activeId}-${expressScenario}-${JSON.stringify(localCartData)}`}
               productId={activeId}
               isExpress
               expressScenario={expressScenario}
